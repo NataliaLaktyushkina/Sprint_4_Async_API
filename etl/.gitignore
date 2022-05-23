@@ -1,0 +1,5 @@
+app/.env
+app/genres.json
+app/movies.json
+app/persons.json
+/.idea/
