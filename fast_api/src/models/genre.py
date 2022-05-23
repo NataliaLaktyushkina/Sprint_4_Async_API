@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 from uuid import UUID
 
 import orjson
@@ -10,26 +10,12 @@ def orjson_dumps(v, *, default):
     return orjson.dumps(v, default=default).decode()
 
 
-class Film(BaseModel):
+class Genre(BaseModel):
     id: UUID
-    title: str
-    imdb_rating: float
+    name: str
     description: Optional[str]
-    genre: List[str]
-    director: Optional[List[str]]
-    actors: List[dict]
-    writers: List[dict]
 
     class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps
-
-
-class FilmShort(BaseModel):
-    id: UUID
-    title: str
-    imdb_rating: float
-
-    class Config:
+        # Заменяем стандартную работу с json на более быструю
         json_loads = orjson.loads
         json_dumps = orjson_dumps
