@@ -1,0 +1,83 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: postgres_db
+    image: postgres:13
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    expose:
+      - "5432"
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+
+  django:
+    container_name: django
+    build:
+      context: web
+    volumes:
+      - static_data:/app/static
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+    volumes:
+      - static_data:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - django
+
+  elasticsearch:
+    container_name: elastic_search
+    image: elasticsearch:7.17.1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    env_file:
+      - .env
+    ports:
+      - 9200:9200
+
+  redis:
+    container_name: redis
+    image: redis:7.0-alpine
+    ports:
+      - 6379:6379
+    command:
+      - redis-server
+    expose:
+      - "6379"
+
+  etl:
+    container_name: etl
+    build:
+      context: etl
+    env_file:
+      - ./etl/app/.env
+    depends_on:
+      - elasticsearch
+      - postgres
+      - redis
+
+
+  fast_api:
+    container_name: fast_api
+    build:
+      context: fast_api
+    depends_on:
+      - elasticsearch
+      - redis
+    ports:
+      - 8000:8000
+#
+volumes:
+  static_data:
