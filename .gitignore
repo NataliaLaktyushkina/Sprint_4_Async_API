@@ -1,2 +1,3 @@
 /web/app/.idea/
 .env
+docker-compose.override.yml
