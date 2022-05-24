@@ -1,16 +1,11 @@
 from typing import List, Optional
 from uuid import UUID
 
-import orjson
 from pydantic import BaseModel
+from json_config import BaseOrjsonModel
 
 
-def orjson_dumps(v, *, default):
-    # orjson.dumps возвращает bytes, а pydantic требует unicode, поэтому декодируем
-    return orjson.dumps(v, default=default).decode()
-
-
-class Film(BaseModel):
+class Film(BaseModel, BaseOrjsonModel):
     id: UUID
     title: str
     imdb_rating: float
@@ -20,16 +15,8 @@ class Film(BaseModel):
     actors: List[dict]
     writers: List[dict]
 
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps
 
-
-class FilmShort(BaseModel):
+class FilmShort(BaseModel, BaseOrjsonModel):
     id: UUID
     title: str
     imdb_rating: float
-
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps
