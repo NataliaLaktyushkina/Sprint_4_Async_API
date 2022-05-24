@@ -9,5 +9,5 @@ done
 
 echo "Elasticsearch started"
 
-python app/main.py
+python main.py
 
