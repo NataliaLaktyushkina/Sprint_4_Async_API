@@ -1,4 +1,4 @@
 /web/app/.idea/
 .env
 docker-compose.override.yml
-postgresql/data/
+/postgresql/data/

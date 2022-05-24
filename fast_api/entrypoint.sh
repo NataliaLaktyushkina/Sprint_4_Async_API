@@ -9,4 +9,6 @@ done
 
 echo "Elasticsearch started"
 
-exec "$@"
+python app/main.py
+#exec "$@"
+
