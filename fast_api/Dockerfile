@@ -19,4 +19,3 @@ RUN chmod +x entrypoint.sh
 
 
 ENTRYPOINT ["sh","/app/entrypoint.sh"]
-#CMD ["python", "/app/main.py"]
