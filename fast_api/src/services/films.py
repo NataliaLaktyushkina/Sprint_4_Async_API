@@ -5,7 +5,7 @@ from typing import List, Optional, Union
 
 import requests
 from aioredis import Redis
-from core import config
+from core.config import get_settings
 from db.elastic import get_elastic
 from db.redis import get_redis
 from elasticsearch import AsyncElasticsearch, NotFoundError
@@ -14,12 +14,13 @@ from models.film import Film
 
 FILM_CACHE_EXPIRE_IN_SECONDS = 60 * 5  # 5 минут
 
+settings = get_settings()
 
 class FilmService:
     def __init__(self, redis: Redis, elastic: AsyncElasticsearch):
         self.redis = redis
         self.elastic = elastic
-        pit_movies = requests.post(f'http://{config.ELASTIC_HOST}:{config.ELASTIC_PORT}/movies/_pit?keep_alive=1m')
+        pit_movies = requests.post(f'http://{settings.ELASTIC_HOST}:{settings.ELASTIC_PORT}/movies/_pit?keep_alive=1m')
         self.pit_id_movies = json.loads(pit_movies.content.decode('utf-8'))['id']
 
     async def get_by_id(self, film_id: str) -> Optional[Film]:

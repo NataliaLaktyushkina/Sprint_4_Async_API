@@ -68,8 +68,8 @@ services:
     depends_on:
       - elasticsearch
       - redis
-    expose:
-      - "8100"
+#    expose:
+#      - "8100"
 
 volumes:
   static_data:
