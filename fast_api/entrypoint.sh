@@ -9,5 +9,5 @@ done
 
 echo "Elasticsearch started"
 
-python main.py
+gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8100 main:app
 
