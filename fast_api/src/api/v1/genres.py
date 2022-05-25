@@ -3,15 +3,11 @@ from typing import List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+
 from services.genres import GenreService, get_genre_service
+from .response_models.genre import Genre
 
 router = APIRouter()
-
-
-class Genre(BaseModel):
-    uuid: UUID
-    name: str
 
 
 @router.get('/{genre_id}', response_model=Genre)
