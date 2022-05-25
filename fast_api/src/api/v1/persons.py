@@ -1,32 +1,13 @@
 from http import HTTPStatus
 from typing import List, Optional, Union
-from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel
 from services.persons import PersonService, get_person_service
 
-from .films import FilmSorted
+from .response_models.films import FilmSorted
+from .response_models.person import Person
 
 router = APIRouter()
-
-
-class Roles(BaseModel):
-    role: str
-    film_id: UUID
-    film_title: Optional[str]
-    film_imdb_rating: Optional[float]
-
-
-class RolesShort(BaseModel):
-    role: str
-    film_id: UUID
-
-
-class Person(BaseModel):
-    uuid: UUID
-    full_name: str
-    films: List[RolesShort]
 
 
 @router.get('/{person_id}', response_model=Person)
