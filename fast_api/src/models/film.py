@@ -1,12 +1,10 @@
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel
-
 from .json_config import BaseOrjsonModel
 
 
-class Film(BaseModel):
+class Film(BaseOrjsonModel):
     id: UUID
     title: str
     imdb_rating: float
@@ -16,14 +14,9 @@ class Film(BaseModel):
     actors: List[dict]
     writers: List[dict]
 
-    class Config(BaseOrjsonModel):
-        pass
 
-
-class FilmShort(BaseModel):
+class FilmShort(BaseOrjsonModel):
     id: UUID
     title: str
     imdb_rating: float
 
-    class Config(BaseOrjsonModel):
-        pass
