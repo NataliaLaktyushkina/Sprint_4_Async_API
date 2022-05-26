@@ -7,12 +7,14 @@ from services.films import FilmService, get_film_service
 from .response_models.films import Film, FilmSorted
 router = APIRouter()
 
+error_msg = 'film(s) not found'
+
 
 @router.get('/{film_id}', response_model=Film)
 async def film_details(film_id: str, film_service: FilmService = Depends(get_film_service)) -> Film:
     film = await film_service.get_by_id(film_id)
     if not film:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='film not found')
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=error_msg)
 
     # Перекладываем данные из models.Film в Film
     return Film(uuid=film.id,
@@ -36,7 +38,7 @@ async def films_search(sort: str,
 
     films_sorted = await film_service.get_films_search(query, sort, filter_genre, page_number, page_size)
     if not films_sorted:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='films not found')
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=error_msg)
 
     return [FilmSorted(uuid=fs.id,
                        title=fs.title,

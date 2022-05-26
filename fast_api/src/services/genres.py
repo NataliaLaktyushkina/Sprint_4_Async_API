@@ -19,17 +19,18 @@ class GenreService:
         self.elastic = elastic
 
     async def get_by_id(self, genre_id: str) -> Optional[Genre]:
-        genre = await self._genre_from_cache(genre_id)
+        key_string = 'genres:' + genre_id
+        genre = await self._genre_from_cache(key_string)
         if not genre:
             genre = await self._get_genre_from_elastic(genre_id)
             if not genre:
                 return None
-            await self._put_genre_to_cache(genre)
+            await self._put_genre_to_cache(key_string)
 
         return genre
 
     async def get_list(self) -> List[Genre]:
-        key_redis = 'genres_list'
+        key_redis = 'genres:list'
         genres_list = await self._genres_from_cache(key_redis)
         if not genres_list:
             genres_list = await self._get_genres_list_from_elastic()

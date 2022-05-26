@@ -16,6 +16,7 @@ from models.person import Person, Roles, RolesShort
 FILM_CACHE_EXPIRE_IN_SECONDS = 60 * 5  # 5 минут
 settings = get_settings()
 
+
 class PersonService:
     def __init__(self, redis: Redis, elastic: AsyncElasticsearch):
         self.redis = redis
@@ -25,7 +26,8 @@ class PersonService:
         self.pit_id_persons = json.loads(pit_persons.content.decode('utf-8'))['id']
 
     async def get_by_id(self, person_id: str) -> Optional[Person]:
-        person = await self._person_from_cache(person_id)
+        key_string = 'persons:' + person_id
+        person = await self._person_from_cache(key_string)
         if not person:
             person = await self._get_person_from_elastic(person_id)
             if not person:
@@ -35,7 +37,7 @@ class PersonService:
         return person
 
     async def get_films(self, person_id: str) -> List[FilmShort]:
-        key_redis = person_id + 'films_and_roles'
+        key_redis = ':'.join(('persons', str(person_id), 'films_and_roles'))
         films_and_roles = await self._persons_from_cache(key_redis)
         if not films_and_roles:
             films_and_roles = await self._get_films_and_roles_from_elastic(person_id)
@@ -56,7 +58,7 @@ class PersonService:
         return Person(**doc['_source'])
 
     async def get_films_and_roles(self, person_id: str) -> List[RolesShort]:
-        key_redis = str(person_id) + 'films_and_roles'
+        key_redis = ':'.join(('persons', str(person_id), 'films_and_roles'))
         films_and_roles = await self._persons_from_cache(key_redis)
         if not films_and_roles:
             films_and_roles = await self._get_films_and_roles_from_elastic(person_id)
@@ -110,7 +112,7 @@ class PersonService:
     async def get_persons_search(self, full_name: str,
                                  page_number: Union[str, None],
                                  page_size: Union[str, None]) -> Optional[List[Person]]:
-        key_redis = full_name + str(page_number) + str(page_size)
+        key_redis = ':'.join(('persons', full_name, str(page_number), str(page_size)))
         persons = await self._persons_from_cache(key_redis)
         if not persons:
             if page_number and page_size:
@@ -158,7 +160,7 @@ class PersonService:
         return person
 
     async def _put_person_to_cache(self, person: Person):
-        await self.redis.set(str(person.id), person.json(), expire=FILM_CACHE_EXPIRE_IN_SECONDS)
+        await self.redis.set('persons:' + str(person.id), person.json(), expire=FILM_CACHE_EXPIRE_IN_SECONDS)
 
     async def _persons_from_cache(self, key: str) -> Union[List[Person], List[FilmShort]]:
 
