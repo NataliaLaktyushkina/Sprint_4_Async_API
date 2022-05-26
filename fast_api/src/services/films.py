@@ -24,7 +24,8 @@ class FilmService:
         self.pit_id_movies = json.loads(pit_movies.content.decode('utf-8'))['id']
 
     async def get_by_id(self, film_id: str) -> Optional[Film]:
-        film = await self._film_from_cache(film_id)
+        key_string = 'movies:' + film_id
+        film = await self._film_from_cache(key_string)
         if not film:
             film = await self._get_film_from_elastic(film_id)
             if not film:
@@ -36,7 +37,8 @@ class FilmService:
     async def get_films_search(self, title: str, sort: str, genre_name: str,
                                page_number: Union[str, None],
                                page_size: Union[str, None]) -> List[Film]:
-        key_string = str(title)+str(sort)+str(genre_name)+str(page_number)+str(page_size)
+        key_string = ':'.join(('movies', str(title), str(sort), str(genre_name),
+                               str(page_number),str(page_size)))
         films_search = await self._films_from_cache(key_string)
         if not films_search:
             if page_number and page_size:
@@ -105,7 +107,7 @@ class FilmService:
         # Выставляем время жизни кеша — 5 минут
         # https://redis.io/commands/set
         # pydantic позволяет сериализовать модель в json
-        await self.redis.set(str(film.id), film.json(), expire=FILM_CACHE_EXPIRE_IN_SECONDS)
+        await self.redis.set('movies:'+str(film.id), film.json(), expire=FILM_CACHE_EXPIRE_IN_SECONDS)
 
     async def _films_from_cache(self, key: str) -> List[Film]:
 
