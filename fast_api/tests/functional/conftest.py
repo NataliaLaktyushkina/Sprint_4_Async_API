@@ -5,12 +5,13 @@ import aioredis
 from dataclasses import dataclass
 from elasticsearch import AsyncElasticsearch
 from typing import Optional
-from typing import Generator
+from settings import get_test_settings
 
 
 SERVICE_URL = 'http://127.0.0.1:80'
+URL_REDIS = 'http://127.0.0.1:6379'
 
-# settings = get_test_settings()
+settings = get_test_settings()
 
 
 @dataclass
@@ -38,7 +39,8 @@ async def es_client():
 async def redis_client():
     client = await aioredis.create_redis_pool((settings.REDIS_HOST, settings.REDIS_PORT), minsize=10, maxsize=20)
     yield client
-    await client.close()
+    client.close()
+    await client.wait_closed()
 
 @pytest.fixture(scope='session')
 def event_loop():
@@ -61,4 +63,20 @@ def make_get_request(session):
             )
 
     return inner
+
+
+@pytest.fixture
+def make_get_request_redis(session):
+    async def inner(method: str, params: Optional[dict] = None) -> HTTPResponse:
+        params = params or {}
+        url = 'redis-cli'
+        async with session.get(url, params=params) as response:
+            return HTTPResponse(
+                body=await response.json(),
+                headers=response.headers,
+                status=response.status,
+            )
+
+    return inner
+
 

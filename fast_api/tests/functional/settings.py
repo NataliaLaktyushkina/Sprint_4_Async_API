@@ -1,5 +1,6 @@
 from pydantic import BaseSettings, Field
-from fast_api.src.core.config import Settings
+from Sprint_4_Async_API.fast_api.src.core.config import Settings
+
 
 
 class TestSettings(Settings):
