@@ -1,15 +1,16 @@
 import pytest
 
-from Sprint_4_Async_API.fast_api.tests.functional.testdata.test_data_genres import genre_id_to_try, genres_all, \
-    genres_cache
+from testdata.test_data_genres import genre_ids_for_test, genres_all, genres_cache
+
+from testdata.test_data_films import film_ids_for_test
 
 
 class TestGenre:
 
-    @pytest.mark.parametrize('genre_id, expected', genre_id_to_try)
+    @pytest.mark.parametrize('genre_id, expected', genre_ids_for_test)
     @pytest.mark.asyncio
     async def test_genre(self, make_get_request, genre_id, expected):
-        path = '/'.join(("/genres", genre_id))
+        path = '/'.join(('/genres', genre_id))
         response = await make_get_request(path)
 
         assert response.status == 200
@@ -17,8 +18,8 @@ class TestGenre:
 
     @pytest.mark.parametrize('len_genres, expected', genres_all)
     @pytest.mark.asyncio
-    async def test_genre_all(sellf, make_get_request, len_genres, expected):
-        path = "/genres"
+    async def test_genre_all(self, make_get_request, len_genres, expected):
+        path = '/genres'
         response = await make_get_request(path)
 
         assert response.status == 200
@@ -35,10 +36,22 @@ class TestGenre:
         redis_client.flushall()
 
         # make response
-        path = '/'.join(("/genres", genre_id))
-        response = await make_get_request(path)
+        path = '/'.join(('/genres', genre_id))
+        await make_get_request(path)
 
         # Check cache
         key = 'genres:' + genre_id
         response = await redis_client.exists(key)
         assert response == 1
+
+
+class TestFilm:
+
+    @pytest.mark.parametrize('film_id, expected', film_ids_for_test)
+    @pytest.mark.asyncio
+    async def test_film(self, make_get_request, film_id, expected):
+        path = '/'.join(('/films', film_id))
+        response = await make_get_request(path)
+
+        assert response.status == 200
+        assert response.body == expected

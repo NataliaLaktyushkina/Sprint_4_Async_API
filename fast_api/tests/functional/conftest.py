@@ -1,12 +1,13 @@
-import pytest
-import aiohttp
 import asyncio
-import aioredis
 from dataclasses import dataclass
-from elasticsearch import AsyncElasticsearch
 from typing import Optional
-from settings import get_test_settings
 
+import aiohttp
+import aioredis
+import pytest
+from elasticsearch import AsyncElasticsearch
+
+from settings import get_test_settings
 
 SERVICE_URL = 'http://127.0.0.1:80'
 URL_REDIS = 'http://127.0.0.1:6379'

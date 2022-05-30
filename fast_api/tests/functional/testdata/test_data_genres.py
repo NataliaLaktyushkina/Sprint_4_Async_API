@@ -1,4 +1,4 @@
-genre_id_to_try = [('3d8d9bf5-0d90-4353-88ba-4ccc5d2c07ff',
+genre_ids_for_test = [('3d8d9bf5-0d90-4353-88ba-4ccc5d2c07ff',
                     {
                         "uuid": "3d8d9bf5-0d90-4353-88ba-4ccc5d2c07ff",
                         "name": "Action"
