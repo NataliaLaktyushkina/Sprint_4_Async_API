@@ -29,7 +29,7 @@ async def film_details(film_id: str, film_service: FilmService = Depends(get_fil
 
 
 @router.get('/', response_model=List[FilmSorted])
-async def films_search(sort: str,
+async def films_search(sort: str = Query(default='-'),
                        query: str = Query(default=None),
                        filter_genre: str = Query(default=None, alias="filter[genre]"),
                        page_number: Union[str, None] = Query(default=0, alias="page[number]"),

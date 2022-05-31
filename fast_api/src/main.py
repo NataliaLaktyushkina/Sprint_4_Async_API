@@ -1,9 +1,8 @@
 import aioredis
 import uvicorn
 from elasticsearch import AsyncElasticsearch
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
-
 
 from api.v1 import films, genres, persons
 from core.config import get_settings
@@ -44,4 +43,3 @@ if __name__ == '__main__':
         host='0.0.0.0',
         port=8100,
     )
-
