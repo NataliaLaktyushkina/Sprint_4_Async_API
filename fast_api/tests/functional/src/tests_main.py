@@ -2,7 +2,7 @@ import pytest
 
 from testdata.test_data_films import film_ids_for_test, films_all, films_cache, film_keys
 from testdata.test_data_genres import genre_ids_for_test, genres_all, genres_cache
-from testdata.test_data_person import person_ids_for_test
+from testdata.test_data_person import person_ids_for_test, person_cache
 
 
 def check_keys(response_dict, keys):
@@ -114,3 +114,20 @@ class TestPerson:
 
         assert response.status == 200
         assert response.body == expected
+
+    @pytest.mark.parametrize('person_id', person_cache)
+    @pytest.mark.asyncio
+    async def test_person_cache(self, redis_client,
+                                make_get_request, make_get_request_redis,
+                                person_id):
+        # Clean cache
+        redis_client.flushall()
+
+        # make response
+        path = '/'.join(('/persons', person_id))
+        await make_get_request(path)
+
+        # Check cache
+        key = 'persons:' + person_id
+        response = await redis_client.exists(key)
+        assert response == 1
