@@ -107,3 +107,7 @@ person_ids_for_test = [("5b4bf1bc-3397-4e83-9b17-8b10c6544ed1",
 
 person_cache = ["a5a8f573-3cee-4ccc-8a2b-91cb9f55250a",
                 "a1758395-9578-41af-88b8-3f9456e6d938"]
+
+persons_all = [(10, 4166)]
+
+persons_keys = [('uuid', 'full_name', 'films')]
