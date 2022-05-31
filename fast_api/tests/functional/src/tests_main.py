@@ -2,7 +2,7 @@ import pytest
 
 from testdata.test_data_genres import genre_ids_for_test, genres_all, genres_cache
 
-from testdata.test_data_films import film_ids_for_test
+from testdata.test_data_films import film_ids_for_test, films_all, films_cache
 
 
 class TestGenre:
@@ -55,3 +55,31 @@ class TestFilm:
 
         assert response.status == 200
         assert response.body == expected
+
+    # @pytest.mark.parametrize('len_films', films_all)
+    # @pytest.mark.asyncio
+    # async def test_films_all(self, make_get_request, len_films):
+    #     path = '/films/?sort=-'
+    #     response = await make_get_request(path)
+    #
+    #     assert response.status == 200
+    #     assert len(response.body) == len_films
+    #     # check first 3 elements
+    #     # assert response.body[0:3] == expected
+
+    @pytest.mark.parametrize('film_id', films_cache)
+    @pytest.mark.asyncio
+    async def test_films_cache(self, redis_client,
+                               make_get_request, make_get_request_redis,
+                               film_id):
+        # Clean cache
+        redis_client.flushall()
+
+        # make response
+        path = '/'.join(('/films', film_id))
+        await make_get_request(path)
+
+        # Check cache
+        key = 'movies:' + film_id
+        response = await redis_client.exists(key)
+        assert response == 1
