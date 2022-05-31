@@ -38,7 +38,7 @@ class FilmService:
                                page_number: Union[str, None],
                                page_size: Union[str, None]) -> List[Film]:
         key_string = ':'.join(('movies', str(title), str(sort), str(genre_name),
-                               str(page_number),str(page_size)))
+                               str(page_number), str(page_size)))
         films_search = await self._films_from_cache(key_string)
         if not films_search:
             if page_number and page_size:
