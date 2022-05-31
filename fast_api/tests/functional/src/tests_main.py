@@ -1,8 +1,14 @@
 import pytest
 
+from testdata.test_data_films import film_ids_for_test, films_all, films_cache, film_keys
 from testdata.test_data_genres import genre_ids_for_test, genres_all, genres_cache
 
-from testdata.test_data_films import film_ids_for_test, films_all, films_cache
+
+def check_keys(response_dict, keys):
+    for key in keys:
+        if key not in response_dict:
+            return False
+    return True
 
 
 class TestGenre:
@@ -56,16 +62,28 @@ class TestFilm:
         assert response.status == 200
         assert response.body == expected
 
-    # @pytest.mark.parametrize('len_films', films_all)
-    # @pytest.mark.asyncio
-    # async def test_films_all(self, make_get_request, len_films):
-    #     path = '/films/?sort=-'
-    #     response = await make_get_request(path)
-    #
-    #     assert response.status == 200
-    #     assert len(response.body) == len_films
-    #     # check first 3 elements
-    #     # assert response.body[0:3] == expected
+    @pytest.mark.parametrize('keys', film_keys)
+    @pytest.mark.parametrize('page_size, len_films', films_all)
+    @pytest.mark.asyncio
+    async def test_films_all(self, make_get_request,
+                             page_size, len_films, keys):
+        # Check first 10 films
+        path = '/films'
+        response = await make_get_request(path)
+
+        assert response.status == 200
+        assert len(response.body) == page_size
+        assert check_keys(response.body[0], keys) is True
+
+        # Check  amount of all films
+        len_last_page = len_films % page_size
+        last_page = len_films // page_size + 1
+        path = '/films'
+        params = {'page[number]': last_page, 'page[size]': page_size}
+        response = await make_get_request(path, params)
+
+        assert response.status == 200
+        assert len(response.body) == len_last_page
 
     @pytest.mark.parametrize('film_id', films_cache)
     @pytest.mark.asyncio

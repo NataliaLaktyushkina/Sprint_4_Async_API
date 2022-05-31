@@ -78,8 +78,10 @@ film_ids_for_test = [("05d7341e-e367-4e2e-acf5-4652a8435f93",
                       }
                       )
                      ]
-films_all = [999]
+films_all = [(10, 999)]
 
 films_cache = ["05d7341e-e367-4e2e-acf5-4652a8435f93",
                "46143f45-25f5-4df9-8927-b5f7fa92e1a3"
                ]
+
+film_keys = [('uuid', 'title', 'imdb_rating')]
