@@ -2,7 +2,7 @@ import pytest
 
 from testdata.test_data_films import film_ids_for_test, films_all, films_cache, film_keys
 from testdata.test_data_genres import genre_ids_for_test, genres_all, genres_cache
-from testdata.test_data_person import person_ids_for_test, persons_all, person_cache, persons_keys
+from testdata.test_data_person import person_ids_for_test, persons_all, person_cache, persons_keys, person_film
 
 
 def check_keys(response_dict, keys):
@@ -154,3 +154,17 @@ class TestPerson:
         key = 'persons:' + person_id
         response = await redis_client.exists(key)
         assert response == 1
+
+    @pytest.mark.parametrize('person_id, expected', person_film)
+    @pytest.mark.asyncio
+    async def test_persons_films(self, make_get_request, person_id, expected):
+        # Check first 10 films
+        path = '/'.join(('/persons', person_id, 'film'))
+        # persons / b5d2b63a - ed1f - 4e46 - 8320 - cf52a32be358 / film
+        response = await make_get_request(path)
+
+        assert response.status == 200
+        assert response.body == expected
+
+
+

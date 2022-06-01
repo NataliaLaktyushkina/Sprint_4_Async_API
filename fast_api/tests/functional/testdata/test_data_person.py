@@ -111,3 +111,28 @@ person_cache = ["a5a8f573-3cee-4ccc-8a2b-91cb9f55250a",
 persons_all = [(10, 4166)]
 
 persons_keys = [('uuid', 'full_name', 'films')]
+
+person_film = [("8ba1658c-a9a3-4d08-b67a-9695dc79028d",
+                [
+                    {
+                        "uuid": "adc67ce9-a096-46e7-bc70-247266a058b7",
+                        "title": "The Poker Star",
+                        "imdb_rating": 7.9
+                    }
+                ]
+                ),
+               ("28ae10bf-763b-48d5-9552-5c42e58cf19d",
+                [
+                    {
+                        "uuid": "d356fc39-aeaf-4fec-acd3-061ccc582306",
+                        "title": "An All-Star Tribute to Elizabeth Taylor",
+                        "imdb_rating": 6
+                    },
+                    {
+                        "uuid": "ff750819-6004-426b-ae66-19a3ba15adcc",
+                        "title": "General Electric''s All-Star Anniversary",
+                        "imdb_rating": 6.8
+                    }
+                ]
+                )
+               ]
