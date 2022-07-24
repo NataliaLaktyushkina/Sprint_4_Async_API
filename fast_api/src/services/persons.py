@@ -116,7 +116,7 @@ class PersonService:
         persons = await self._persons_from_cache(key_redis)
         if not persons:
             if page_number and page_size:
-                page_number = int(page_size) * (int(page_number) - 1) + 1
+                page_number = int(page_size) * (int(page_number) - 1)
             persons = await self._get_persons_search_from_elastic(full_name, page_number, page_size)
             if not persons:
                 return None

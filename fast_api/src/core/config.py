@@ -1,7 +1,7 @@
 import os
 # from logging import config as logging_config
 
-# from core.logger import logger
+
 from pydantic import BaseSettings
 from dotenv import load_dotenv
 
@@ -66,5 +66,4 @@ def get_prom_settings():
 def get_dev_settings():
     return DevSettings()
 
-# Применяем настройки логирования
-# logging_config.dictConfig(logger)
+
