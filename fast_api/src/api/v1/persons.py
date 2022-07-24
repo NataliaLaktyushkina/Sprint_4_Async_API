@@ -38,7 +38,7 @@ async def person_film_details(person_id: str,
 
 
 @router.get('/', response_model=List[Person])
-async def persons_search(query: str = Query(default=None),
+async def persons_search(query: str = Query(default=''),
                          page_number: Union[str, None] = Query(default=0, alias="page[number]"),
                          page_size: Union[str, None] = Query(default=0, alias="page[size]"),
                          person_service: PersonService = Depends(get_person_service)) -> List[Person]:
