@@ -25,7 +25,7 @@ class GenreService:
             genre = await self._get_genre_from_elastic(genre_id)
             if not genre:
                 return None
-            await self._put_genre_to_cache(key_string)
+            await self._put_genre_to_cache(key_string, genre)
 
         return genre
 
@@ -58,16 +58,16 @@ class GenreService:
             return None
         return [Genre(**d['_source']) for d in doc['hits']['hits']]
 
-    async def _genre_from_cache(self, genre_id: str) -> Optional[Genre]:
-        data = await self.redis.get(genre_id)
+    async def _genre_from_cache(self, key: str) -> Optional[Genre]:
+        data = await self.redis.get(key)
         if not data:
             return None
 
         genre = Genre.parse_raw(data)
         return genre
 
-    async def _put_genre_to_cache(self, genre: Genre):
-        await self.redis.set(str(genre.id), genre.json(), expire=FILM_CACHE_EXPIRE_IN_SECONDS)
+    async def _put_genre_to_cache(self, key: str, genre: Genre):
+        await self.redis.set(key, genre.json(), expire=FILM_CACHE_EXPIRE_IN_SECONDS)
 
     async def _genres_from_cache(self, key: str) -> List[Genre]:
 
@@ -84,7 +84,7 @@ class GenreService:
         await self.redis.set(key, pickled_object, expire=FILM_CACHE_EXPIRE_IN_SECONDS)
 
 
-@lru_cache()
+# @lru_cache()
 def get_genre_service(
         redis: Redis = Depends(get_redis),
         elastic: AsyncElasticsearch = Depends(get_elastic),
