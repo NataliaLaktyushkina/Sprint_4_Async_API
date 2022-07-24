@@ -4,10 +4,11 @@ from elasticsearch import AsyncElasticsearch
 from fastapi import Depends, FastAPI
 from fastapi.responses import ORJSONResponse
 
-
 from api.v1 import films, genres, persons
 from core.config import get_settings
 from db import elastic, redis
+from services.jwt_check import JWTBearer
+
 
 settings = get_settings()
 
@@ -18,6 +19,7 @@ app = FastAPI(
     default_response_class=ORJSONResponse,
 )
 
+PROTECTED = [Depends(JWTBearer())]
 
 @app.on_event('startup')
 async def startup():
@@ -34,7 +36,7 @@ async def shutdown():
 
 # Подключаем роутер к серверу, указав префикс /v1/films
 # Теги указываем для удобства навигации по документации
-app.include_router(films.router, prefix='/api/v1/films', tags=['films'])
+app.include_router(films.router, prefix='/api/v1/films', tags=['films'], dependencies=PROTECTED)
 app.include_router(genres.router, prefix='/api/v1/genres', tags=['genres'])
 app.include_router(persons.router, prefix='/api/v1/persons', tags=['persons'])
 
