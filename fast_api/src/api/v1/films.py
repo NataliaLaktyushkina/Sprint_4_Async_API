@@ -4,7 +4,7 @@ from typing import List, Union
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from services.films import FilmService, get_film_service
-from .response_models.films import Film, FilmSorted
+from .response_models.films import Film, FilmSorted, FilmBySubscription
 router = APIRouter()
 
 error_msg = 'film(s) not found'
@@ -43,3 +43,11 @@ async def films_search(sort: str = Query(default='-'),
     return [FilmSorted(uuid=fs.id,
                        title=fs.title,
                        imdb_rating=fs.imdb_rating) for fs in films_sorted]
+
+
+@router.get('/{film_id}/by_subscription', response_model=FilmBySubscription)
+async def film_details(
+        film_id: str,
+        film_service: FilmService = Depends(get_film_service)
+) -> FilmBySubscription:
+    return  await film_service.by_subscription(film_id)
