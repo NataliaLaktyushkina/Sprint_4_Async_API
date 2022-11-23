@@ -20,3 +20,6 @@ class FilmShort(BaseOrjsonModel):
     title: str
     imdb_rating: Optional[float]
 
+
+class FilmBySubscription(BaseOrjsonModel):
+    by_subscription: bool

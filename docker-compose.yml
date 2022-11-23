@@ -30,10 +30,10 @@ services:
     volumes:
       - static_data:/static
     ports:
-      - "80:80"
+      - "90:80"
     depends_on:
       - django
-      - fast_api
+#      - fast_api
 
   elasticsearch:
     container_name: elastic_search
@@ -65,11 +65,24 @@ services:
     container_name: fast_api
     build:
       context: fast_api
+    image: fastapi_image
+#    ports:
+#      - "8000:8000"
     depends_on:
       - elasticsearch
       - redis
-#    expose:
-#      - "8100"
+
+#  tests:
+#    container_name: tests
+#    image: fastapi_image
+#    depends_on:
+#      - elasticsearch
+#      - redis
+#    entrypoint: >
+#      sh -c "pip install -r /tests/functional/requirements.txt
+#      && python3 /tests/functional/utils/wait_for_es.py
+#      && python3 /tests/functional/utils/wait_for_redis.py
+#      && pytest /tests/functional/src"
 
 volumes:
   static_data:

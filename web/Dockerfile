@@ -3,10 +3,12 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 RUN set -ex \
-  && apk --no-cache add postgresql-dev
+#  && apk --no-cache add postgresql-dev
+   && apk  add postgresql-dev
 
 # для postgres
-RUN apk add --update --no-cache --virtual .tmp gcc libc-dev linux-headers
+#RUN apk add --update --no-cache --virtual .tmp gcc libc-dev linux-headers
+RUN apk add --update  --virtual .tmp gcc libc-dev linux-headers
 
 WORKDIR /app
 

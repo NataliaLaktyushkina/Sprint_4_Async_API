@@ -18,3 +18,7 @@ class FilmSorted(BaseOrjsonModel):
     uuid: UUID
     title: str
     imdb_rating: Optional[float]
+
+
+class FilmBySubscription(BaseOrjsonModel):
+    by_subscription: bool
