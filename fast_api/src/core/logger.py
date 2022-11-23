@@ -1,3 +1,5 @@
+import logging
+
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 LOG_DEFAULT_HANDLERS = ['console', ]
 
@@ -60,3 +62,13 @@ LOGGING = {
         'handlers': LOG_DEFAULT_HANDLERS,
     },
 }
+
+_formatter = logging.Formatter(LOG_FORMAT)
+
+_log_handler = logging.StreamHandler()
+_log_handler.setLevel(logging.DEBUG)
+_log_handler.setFormatter(_formatter)
+
+logger = logging.getLogger('fast_api')
+logger.addHandler(_log_handler)
+logger.setLevel(logging.DEBUG)
